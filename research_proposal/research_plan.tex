@@ -1,0 +1,103 @@
+\section{Research Plan}
+\label{sec:research-plan}
+
+The goal of this proposal, restated from Section~\ref{sec:research-introduction},
+is to comprehensively characterize how well current VLMs perform the core CV
+tasks of disaster response -- detection, segmentation, and classification of
+flooded areas, burned areas, and damaged roads and infrastructure (including
+buildings and debris) -- once evaluation is extended across the fuller
+landscape of disaster RS datasets and stratified by imagery provider and
+sensor, and to establish whether a consolidated benchmark or fine-tuned model
+can close the gaps found. A key targeted contribution of this work would be the modular framework of evaluation allowing us
+and the wider community to plugin new datasets or models and running evaluation out of the box with central dashboards of performance.
+
+\subsection{Research questions}
+
+\textbf{RQ1 (Is the ``cross-sensor gap'' actually a cross-provider or
+cross-resolution gap?)} Re-evaluate DisasterM3's 14 benchmarked and 4
+fine-tuned VLMs with results disaggregated by imagery \emph{provider} (Maxar
+vs.\ Capella vs.\ Umbra) and by \emph{resolution regime}, not only by the
+optical/SAR modality split the paper reports. If accuracy tracks provider or
+resolution more tightly than it tracks modality, the ``cross-sensor gap'' is
+better described (and better fixed) as a provider- or resolution-robustness
+problem.
+
+\textbf{RQ2 (Does performance generalize across datasets, or is it
+DisasterM3-specific?)} Extend the same stratified evaluation to MONITRS
+(event-level temporal/textual narrative QA) and to a curated, license-cleared
+subset of the datasets catalogued in our survey
+(Section~\ref{sec:dataset-landscape}) -- e.g.\ BRIGHT and xBD for building
+damage, Sen1Floods11/WorldFloods/C2S-MS Floods for flood segmentation on
+Sentinel imagery, FloodNet and RescueNet for UAV-scale imagery, CanadaFire2023
+and Sen2Fire for burned-area segmentation reformatted into a common
+instruction/prompt schema. This tests whether DisasterM3-fine-tuned VLMs
+generalize to providers, sensors, and hazards they were not tuned on, or
+whether they have overfit to DisasterM3's specific Maxar/Capella/Umbra
+distribution. Most likely, the already low performance values shown in DisasterM3, will be even lower which would make a compelling case
+to develop an own model.
+
+\textbf{RQ3 (Where are the task$\times$hazard coverage gaps?)} Map the
+detection/segmentation/classification $\times$ \{flood, burned area, damaged
+road, damaged building, debris\} grid the user community actually needs
+against what DisasterM3's nine tasks cover today. DisasterM3 already supplies
+damaged-building counting and damaged-road estimation; burned-area
+segmentation and debris-specific detection are not represented in its task
+suite and would need to be sourced from other survey entries (e.g.\
+CanadaFire2023, Satellite Burned Area Dataset, RescueNet, ISBDA) and
+reformatted into the same instruction schema.
+
+\textbf{RQ4 (Can a consolidated model close the gaps found in RQ1--3?)} Once
+RQ1--3 have identified where and how badly current VLMs fail, fine-tune one
+or two open VLMs (e.g.\ Qwen2.5-VL, InternVL3, following DisasterM3's own
+choice of base models) on a merged instruction corpus that is explicitly
+balanced across providers, resolution regimes, and task$\times$hazard cells,
+and test whether this closes the provider/resolution gaps that a DisasterM3-
+only fine-tune does not.
+
+\subsection{Approach}
+
+\begin{enumerate}
+  \item \textbf{Stratified re-evaluation harness (RQ1).} Build an evaluation
+  harness around DisasterM3's own released test set and model checkpoints,
+  adding provider and resolution metadata (already implicit in DisasterM3's
+  data but not surfaced in its reported metrics) so every existing result can
+  be re-sliced without any new training. This is the fastest step to execute
+  and, on its own, already answers RQ1.
+  \item \textbf{Dataset intake and harmonization (RQ2--3).} From the 44-dataset
+  survey, filter to datasets that are downloadable and permissively licensed,
+  prioritizing coverage of task$\times$hazard cells and provider/resolution
+  regimes that DisasterM3 and BRIGHT under-represent (Sentinel-class medium
+  resolution, UAV-scale imagery, burned area, debris). Convert their existing
+  labels (masks, boxes, class labels) into instruction-style prompts
+  comparable in format to DisasterM3's, and fold in MONITRS's event-level QA
+  as a separate, temporally-oriented evaluation track rather than forcing it
+  into the same per-image schema.
+  \item \textbf{Extended stratified benchmarking (RQ2--3).} Run the same 14
+  VLMs DisasterM3 benchmarks, plus its 4 fine-tuned checkpoints (if published), as well as newer models (for e.g. we don't see EarthMind in the eval), through the
+  harmonized harness, reporting every metric stratified by provider,
+  resolution regime, hazard type, and task -- producing, to our knowledge,
+  the first provider/resolution-stratified view of VLM performance on
+  disaster RS imagery.
+  \item \textbf{Consolidated fine-tuning (RQ4, contingent on Steps 1--3).}
+  If Steps 1--3 confirm systematic, provider- or resolution-linked failure
+  modes (rather than idiosyncratic per-dataset noise), construct a
+  provider/task-balanced instruction-tuning corpus from the harmonized data
+  and fine-tune 1--2 open VLMs, evaluating them through the same stratified
+  harness to test whether the gaps close.
+\end{enumerate}
+
+The stratified benchmarking harness and results (Steps 1--3) constitute a
+complete, releasable contribution independent of whether Step 4 is pursued,
+which keeps the proposal viable even if fine-tuning compute or licensing
+constraints limit what Step 4 can cover.
+
+\subsection{Risks and open questions}
+
+We haven't found DisasterM3's fine-tuned models online. A further check is needed but perhaps directly contacting the authors could help.
+Furthermore, the license and redistribution terms of
+each survey dataset must be checked individually before inclusion in Step 2;
+several entries in the survey record license as unspecified or unverified.
+Reformatting mask/box-labeled datasets into instruction prompts (Step 2) is
+itself a modeling choice that can introduce its own bias (e.g.\ how a
+segmentation mask is turned into a natural-language question), and should be
+validated.

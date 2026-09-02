@@ -15,8 +15,8 @@
 % Which subproject to build: title and authorship are defined in that
 % subproject's own titlepage.tex, so switching subprojects only requires
 % changing this one line.
-\newcommand{\subproject}{project_proposal}
-%\newcommand{\subproject}{research_proposal}
+%\newcommand{\subproject}{project_proposal}
+\newcommand{\subproject}{research_proposal}
 \input{\subproject/titlepage}
 
 % Note on per-subproject templates: \documentclass above is fixed at
@@ -39,9 +39,6 @@
 
 \subfile{\subproject/main}
 
-% Uncomment once you have at least one \cite{} somewhere in the document --
-% IEEEtran's bibliography list environment errors out ("Something's wrong--
-% perhaps a missing \item") if references.bib has nothing to list yet.
-%\bibliographystyle{unsrt}
-%\bibliography{references}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
 \end{document}

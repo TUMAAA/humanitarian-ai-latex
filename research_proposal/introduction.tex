@@ -1,3 +1,52 @@
 \section{Introduction}
 \label{sec:research-introduction}
-\tbc
+
+Remote sensing (RS) imagery is one of the fastest available sources of situational
+awareness after a disaster: satellites and aircraft can image an affected area
+within hours, long before ground teams can reach it. Turning that imagery into
+actionable information, however, still largely relies on task-specific computer
+vision (CV) models trained separately for each disaster type and each output
+(a flood-segmentation network here, a building-damage classifier there, a
+burned-area detector elsewhere). Vision-language models (VLMs) promise a more
+general alternative: a single model that can be instructed, in natural
+language, to detect, segment, classify, count, and reason about damage across
+disaster types and imagery sources. Whether current VLMs actually deliver on
+that promise for RS disaster imagery -- and under which conditions they fail
+-- is still poorly characterized.
+
+The most direct and recent basis for this proposal is \emph{DisasterM3}
+\fcite{wang2025disasterm3}, which benchmarks 14 general-purpose and RS VLMs
+and fine-tunes four of them on a purpose-built, multi-hazard, multi-sensor
+instruction dataset. DisasterM3 is, to date, the most comprehensive attempt
+to systematically evaluate VLM capability on disaster-related RS vision
+tasks. Yet a benchmark of this kind is necessarily bounded by the data and
+axes of analysis its authors chose to include, and several relevant efforts
+sit outside that boundary: work that appeared in parallel with DisasterM3,
+work that precedes it and shaped it, and a wider landscape of
+disaster-specific RS datasets that our own survey has catalogued
+(Section~\ref{sec:related-work} and Section~\ref{sec:dataset-landscape}).
+One gap is particularly
+illustrative and motivates the direction of this proposal: DisasterM3 mixes
+optical imagery from Maxar with SAR imagery from Capella Space and Umbra, and
+reports that VLMs struggle with a ``cross-sensor gap'' -- but it does not
+break performance down \emph{by imagery provider or sensor}, so it is not
+possible to tell from the paper alone whether a model that looks strong
+overall is actually failing systematically on, say, Sentinel-1 SAR or
+low-resolution aerial imagery while succeeding on Maxar VHR optical. Our
+accompanying dataset survey (\texttt{research\_proposal/dataset\_survey\_noora/}) records
+imagery provider and sensor as first-class fields for every dataset it
+catalogues precisely because this axis keeps recurring as a plausible source
+of hidden performance variance, and it is a natural angle this proposal can
+add on top of DisasterM3's largely provider-agnostic evaluation.
+
+This proposal therefore asks: \emph{how well do current VLMs actually perform
+on the core CV tasks of disaster response -- detection, segmentation, and
+classification of flooded areas, burned areas, and damaged roads and
+infrastructure (including buildings and debris) -- once evaluation is
+extended across the fuller landscape of disaster RS datasets and stratified
+by imagery provider and sensor, and can a consolidated benchmark or a single
+fine-tuned model close the gaps that are found?} Section~\ref{sec:related-work}
+positions DisasterM3 against the prior and concurrent work most relevant to
+this question; Section~\ref{sec:dataset-landscape} summarizes what our
+dataset survey adds to that picture; and Section~\ref{sec:research-plan}
+lays out the concrete research questions and approach.

@@ -1,0 +1,110 @@
+\section{Related Work}
+\label{sec:related-work}
+
+\subsection{DisasterM3: the primary basis for this proposal}
+\label{sec:related-disasterm3}
+
+\emph{DisasterM3} \fcite{wang2025disasterm3} is, to date, the most comprehensive
+attempt to benchmark VLMs on disaster-related RS vision tasks, and is the
+direct basis for this proposal. It contributes 26,988 bi-temporal (pre/post)
+satellite images and 123k instruction pairs spanning 36 historical disaster
+events across 5 continents, grouped into 10 natural and man-made disaster
+types (earthquakes, tsunamis, floods, explosions, storms, landslides,
+tornadoes, conflicts, wildfires, volcanic eruptions). Imagery is drawn from
+Maxar's WorldView series (optical) and from Capella Space and Umbra (SAR),
+combined because extreme weather during disasters routinely prevents optical
+sensors from imaging the scene at all. On top of this imagery, DisasterM3
+defines nine tasks that progress from disaster-bearing-body and disaster-type
+recognition, through damaged-building counting, damaged-road estimation, and
+referring segmentation, to damaged-object relational reasoning and long-form
+report/restoration-advice generation i.e. detection-, segmentation-, and
+classification-style tasks alongside open-ended reasoning, unified under a
+single instruction-following interface.
+
+DisasterM3 evaluates 14 VLMs: five generic open models (LLaVA-OneVision,
+InternVL3, Qwen2.5-VL, Kimi-VL, LLaVA-1.5), three commercial models (GPT-4o,
+Claude-3, GPT-4.1), and seven RS-specific models (GeoChat, TeoChat, EarthDial,
+GeoPixel, LISA, PSALM, HyperSeg); it then fine-tunes four of them
+(Qwen2.5-VL-7B, InternVL3-8B, LISA-7B, PSALM-1.3B) on the dataset. The
+headline findings are that (i) state-of-the-art VLMs struggle across the
+board absent a disaster-specific corpus, (ii) a \emph{cross-sensor gap}
+persists even after fine-tuning e.g. fine-tuned PSALM improves referring
+segmentation by 40.8\% optical$\to$optical but only 23.7\% optical$\to$SAR --
+and (iii) models show a density-dependent \emph{damage-counting} bias
+(confident at the extremes of building density, unreliable in the mid-range),
+which fine-tuning can shift toward an overfitting dilemma rather than resolve.
+Crucially for this proposal, DisasterM3 reports the cross-sensor gap only as
+a binary optical-vs-SAR split: because its SAR imagery is pooled from two
+distinct commercial providers (Capella and Umbra) with different sensor
+characteristics, and its optical imagery is exclusively Maxar, the paper
+cannot and does not say whether the ``cross-sensor gap'' is really a
+cross-\emph{provider} gap, a cross-\emph{resolution} gap, or genuinely a
+modality (SAR vs.\ optical) effect.
+
+\subsection{Prior work that DisasterM3 builds on}
+\label{sec:related-prior}
+
+DisasterM3 is not a first attempt so much as a merge of two threads pursued
+by an overlapping set of authors. \emph{EarthVQA} \fcite{wang2024earthvqa},
+led by the same first author (Junjue Wang) roughly a year and a half earlier,
+introduced relational-reasoning visual question answering for RS imagery:
+6,000 images of Wuhan, Changzhou, and Nanjing with 208,593 QA pairs spanning
+judging, counting, and comprehensive relational-reasoning questions about
+urban and rural governance (e.g.\ road/water renovation needs), plus the SOBA
+(Semantic OBject Awareness) framework for answering them. EarthVQA is not
+disaster-specific -- its objects of interest are governance-relevant urban
+features, not damage -- but its task taxonomy (judging, counting, relational
+reasoning, comprehensive analysis) is structurally the template that
+DisasterM3's own task suite (damaged-object relational reasoning, damaged-
+building counting, comprehensive report generation) generalizes from urban
+planning to disaster response. Separately, \emph{BRIGHT}
+\fcite{chen2025bright}, posted about four months before DisasterM3 and sharing
+six of DisasterM3's authors,
+built a building-damage-assessment dataset from exactly the three imagery
+providers DisasterM3 later reuses: Maxar (optical) and Capella and Umbra
+(SAR), across 14 regions at 0.3--1\,m resolution, evaluated with seven models
+and adopted as the official dataset of the 2025 IEEE GRSS Data Fusion
+Contest. DisasterM3's multi-sensor optical+SAR design is thus a direct
+continuation of BRIGHT's data-collection pipeline, generalized from
+single-task damage classification to a nine-task instruction-following VLM
+benchmark but the provider-level distinctions BRIGHT's own collection
+process preserves (three separately sourced providers) are exactly what get
+collapsed into a single ``SAR'' pool once the data is repurposed inside
+DisasterM3.
+
+Two older, widely used datasets sit further back in this lineage and recur
+throughout the wider survey (Section~\ref{sec:dataset-landscape}). \emph{xBD}
+\cite{gupta2019xbd} established the pre/post, ordinal (no damage / minor /
+major / destroyed) building-damage-classification paradigm on Maxar imagery
+across 15 countries and remains the largest damage-labeled corpus available,
+underpinning the classification-style task family that DisasterM3, BRIGHT,
+and most datasets in our survey inherit. \emph{FloodNet}
+\cite{rahnemoonfar2021floodnet} showed, four years before DisasterM3, that a
+single detect/segment/classify/VQA task bundle could be built around one
+disaster type (post-hurricane flooding) from UAV imagery validating the
+``one model, several CV tasks, natural-language interface'' formulation at
+centimeter scale well before VLM-scale, multi-hazard benchmarks existed.
+
+\subsection{Concurrent work: MONITRS}
+\label{sec:related-concurrent}
+
+\emph{MONITRS} \fcite{revankar2025monitrs} (Cornell and Columbia; no author
+overlap with the Wang/Yokoya lineage above) was posted on arXiv about eight
+weeks after DisasterM3 and, like DisasterM3, was accepted to the NeurIPS 2025
+Datasets and Benchmarks Track as a Spotlight. It targets the same
+underlying problem from a different angle: rather than curating structured,
+per-image instruction pairs, it pairs roughly 10,000 FEMA-catalogued disaster
+events with temporal satellite-imagery sequences and natural-language
+annotations mined from contemporaneous news coverage, and evaluates event-
+level temporal understanding (e.g.\ correctly localizing when a storm's
+impact began, which baseline MLLMs miss but MONITRS-fine-tuned models catch).
+Two independent teams converging on ``benchmark and fine-tune VLMs on
+disaster RS imagery'' within the same publication cycle is itself evidence
+that this is a live, active problem rather than a solved one. Because
+MONITRS is organized around event-level temporal/textual narrative rather
+than DisasterM3's per-image structured task suite, the two datasets are
+complementary axes for a broader evaluation rather than redundant ones. (An
+earlier hypothesis behind this proposal was that \emph{EarthVQA} might
+likewise have appeared in parallel with DisasterM3; the record instead shows
+EarthVQA preceding it by roughly 18 months and sharing an author, which is
+why it is treated above as prior lineage rather than as concurrent work.)

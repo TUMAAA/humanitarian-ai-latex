@@ -16,13 +16,23 @@
 
 \input{citation_macros}
 \input{introduction}
+\input{related_work}
+\input{dataset_landscape}
+\input{research_plan}
 
 % Uncomment once you have at least one \cite{} somewhere in the document --
 % IEEEtran's bibliography list environment errors out ("Something's wrong--
 % perhaps a missing \item") if references.bib has nothing to list yet.
-%\ifSubfilesClassLoaded{%
-%\bibliographystyle{IEEEtran}
-%\bibliography{../references}
-%}{}
+% Bare filename, not ../references: bibtex's working directory when this
+% subfile is compiled standalone depends on how it's invoked (the IDE's
+% BibTeX run config, a manual `cd research_proposal && bibtex main`, etc.),
+% so a relative ../references breaks under some of those. The bare name
+% resolves via kpathsea's BIBINPUTS search path instead, which both the
+% IDE run config and the repo root's own bibtex invocation set to the
+% repo root (where references.bib actually lives).
+\ifSubfilesClassLoaded{%
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+}{}
 
 \end{document}

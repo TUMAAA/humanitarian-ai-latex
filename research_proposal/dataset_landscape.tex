@@ -1,0 +1,69 @@
+\section{What Our Dataset Survey Adds}
+\label{sec:dataset-landscape}
+
+Alongside DisasterM3 and MONITRS, we have compiled an independent survey of
+RS natural-disaster datasets
+(\texttt{research\_proposal/dataset\_survey\_noora/Remote sensing Natural
+Disaster Datasets \& More - RS Natural Disaster Datasets.csv}), recording, for each
+dataset, its imagery provider and sensor, spectral modality, spatial
+resolution, image/annotation counts, geographic and temporal coverage, task
+purpose, disaster type(s), pre/post-event structure, license, and release
+date. The survey currently lists 44 datasets (40 with fully populated task
+and imagery metadata; the remaining four -- including DisasterM3 and MONITRS
+themselves -- are tracked as entries pending completion), released between
+2017 and 2025. Three patterns in this landscape motivate the research
+questions in Section~\ref{sec:research-plan}.
+
+\subsection{Task and hazard coverage is broad but overwhelmingly single-purpose}
+
+Flood datasets dominate (20 of 40 datasets touch flooding), followed by
+earthquake (11), wildfire (8), landslide (7), and hurricane (6), with several
+hazard types -- tsunami, cyclone, explosion, armed conflict -- represented by
+only one dataset each. By task, segmentation (18) and detection (16) are the
+most common annotation styles, followed by classification (10) and change
+detection (2). Exactly \emph{one} dataset in the survey -- DisasterM3 itself
+-- is tagged as a vision-language / instruction-following resource; every
+other dataset supplies conventional single-purpose CV labels (pixel masks,
+bounding boxes, or class labels) rather than natural-language instructions.
+This means that extending VLM evaluation beyond DisasterM3's own test set
+requires deliberately reformatting existing detection/segmentation/
+classification datasets into a prompt-based evaluation protocol -- there is
+essentially no second VLM-native disaster benchmark to fall back on besides
+DisasterM3 and the concurrently released MONITRS.
+
+\subsection{Imagery provider and resolution regime are the dominant axis of variation}
+
+Eighteen of the 40 datasets use Sentinel/Copernicus imagery (ESA, open
+access, $\sim$10\,m resolution); nine use Maxar/WorldView-class commercial
+very-high-resolution (VHR) optical imagery; nine combine UAV/drone or
+crewed-aircraft aerial imagery (centimeter-scale); only two, besides
+DisasterM3 and BRIGHT, use commercial SAR from Capella or Umbra; the
+remainder draw on PlanetScope, Landsat, or Google Earth basemap imagery of
+unclear provenance. By resolution, 14 datasets are sub-meter VHR, 12 sit in
+the $\sim$10\,m Sentinel-class band, 6 are in the 1--5\,m range, and 8 already
+combine more than one provider category within a single dataset (e.g.\
+Sentinel-1+Sentinel-2, or optical+SAR pairs). In other words, the survey is
+not organized around a handful of interchangeable imagery sources: provider
+and resolution regime are large, structured axes of variation that a model
+evaluated only on Maxar optical vs.\ Capella/Umbra SAR (as in DisasterM3)
+never has the opportunity to be tested against. This is the gap this
+proposal is named for: DisasterM3's own cross-sensor finding
+(Section~\ref{sec:related-disasterm3}) is measured across exactly two
+providers on one modality boundary, when the wider landscape spans at least
+five provider families and four resolution regimes.
+
+\subsection{The field is very young and still accelerating}
+
+Only two datasets in the survey were released before 2020, compared to eight
+in 2024 and five so far in 2025 (with several 2025 releases date-unspecified
+and therefore undercounted here). DisasterM3, BRIGHT, and MONITRS -- the
+three works central to this proposal -- were all released within a single
+seven-month window (January--July 2025). The dataset landscape this proposal
+draws on is therefore not a stable, settled resource to catalogue
+retrospectively; it is actively being built, which is also why a
+consolidating, provider-stratified benchmark is worth doing now rather than
+waiting for the landscape to mature further. The survey additionally tracks
+license, downloadability, and human-validation status for each dataset --
+not analyzed quantitatively here, but load-bearing for
+Section~\ref{sec:research-plan}: any dataset folded into a benchmark harness
+or fine-tuning corpus must first be filtered on these fields.
