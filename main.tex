@@ -1,0 +1,47 @@
+\documentclass[10pt,conference]{IEEEtran}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+\usepackage{pgfgantt}
+\usepackage{booktabs}
+\usepackage{multirow}
+\newcommand{\tbc}[0]{\textcolor{blue}{to be completed}}
+
+\usepackage{subfiles} % <--- ALWAYS ADD THIS AS THE LAST PACKAGE
+
+% Which subproject to build: title and authorship are defined in that
+% subproject's own titlepage.tex, so switching subprojects only requires
+% changing this one line.
+\newcommand{\subproject}{project_proposal}
+%\newcommand{\subproject}{research_proposal}
+\input{\subproject/titlepage}
+
+% Note on per-subproject templates: \documentclass above is fixed at
+% compile time, so every subproject built through this root file shares
+% it, and subfiles requires each subproject's own main.tex to declare
+% this same root. If a specific subproject ever needs a genuinely
+% different template (different class, different conference style), the
+% clean way to do that is to NOT use \documentclass[../main.tex]{subfiles}
+% in that subproject's main.tex -- give it its own full \documentclass
+% and preamble instead, and compile it directly (e.g.
+% pdflatex research_proposal/main.tex) rather than through this root
+% file. That subproject then simply won't be reachable via the
+% \subproject switch above, which is a reasonable tradeoff for a one-off,
+% differently templated document.
+
+\begin{document}
+\title{\proposaltitle}
+\author{\proposalauthor}
+\maketitle
+
+\subfile{\subproject/main}
+
+% Uncomment once you have at least one \cite{} somewhere in the document --
+% IEEEtran's bibliography list environment errors out ("Something's wrong--
+% perhaps a missing \item") if references.bib has nothing to list yet.
+%\bibliographystyle{unsrt}
+%\bibliography{references}
+\end{document}

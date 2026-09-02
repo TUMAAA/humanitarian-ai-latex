@@ -1,0 +1,12 @@
+% \fcite{key} = normal numbered \cite{key} (so BibTeX registers it and the
+% References list, driven by ../references.bib as usual, includes it)
+% followed by "(Year, Venue, citation count)" so a reader can judge how
+% established a claim is without leaving the sentence. Data mirrors the
+% citations field on the matching entry in ../references.bib; if that is
+% updated, update the line below too. Verify every count independently
+% (e.g. via OpenAlex or Semantic Scholar) before adding it -- never
+% estimate or guess.
+\newcommand{\fcite}[1]{\cite{#1}~(\csname fc@#1\endcsname)}
+
+% Example (remove once you add real entries):
+% \expandafter\newcommand\csname fc@example2024key\endcsname{2024, Example Venue, 42 citations}

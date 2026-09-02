@@ -1,0 +1,28 @@
+\documentclass[../main.tex]{subfiles}
+
+% Do not \input{titlepage} here: the root file's preamble already loads
+% it (via \input{\subproject/titlepage}), and subfiles copies that same
+% preamble in when this file is compiled standalone, so \proposaltitle
+% and \proposalauthor are already defined by the time we get here. A
+% second \input would redefine them with \newcommand and error out.
+% Consequence: compiling this file standalone uses whichever subproject's
+% titlepage root/main.tex currently has \subproject set to -- set that to
+% project_proposal first if you want this subproject's own title/author.
+
+\begin{document}
+\title{\proposaltitle}
+\author{\proposalauthor}
+\maketitle
+
+\input{citation_macros}
+\input{introduction}
+
+% Uncomment once you have at least one \cite{} somewhere in the document --
+% IEEEtran's bibliography list environment errors out ("Something's wrong--
+% perhaps a missing \item") if references.bib has nothing to list yet.
+%\ifSubfilesClassLoaded{%
+%\bibliographystyle{IEEEtran}
+%\bibliography{../references}
+%}{}
+
+\end{document}
