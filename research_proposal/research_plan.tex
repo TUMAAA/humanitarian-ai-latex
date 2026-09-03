@@ -101,3 +101,76 @@ Reformatting mask/box-labeled datasets into instruction prompts (Step 2) is
 itself a modeling choice that can introduce its own bias (e.g.\ how a
 segmentation mask is turned into a natural-language question), and should be
 validated.
+
+\subsection{Timeline and Team}
+\label{sec:timeline-team}
+
+The risks above are exactly why Step 2 is budgeted generously rather than
+optimistically: license verification across 44 datasets and a likely need to
+contact the DisasterM3 authors are real, unresolved dependencies, not
+formalities. Figure~\ref{fig:research-gantt} and Table~\ref{tab:research-tasks}
+lay out a 9-month plan across two research engineers: one focused on
+\textbf{pipelining} (the harness, dataset harmonization, and benchmarking
+runs of Steps 1--3) and one focused on \textbf{database work} (turning the
+44-dataset survey into a structured, queryable store of provider, sensor,
+license, and downloadability metadata, and the results dashboards mentioned
+above). Step 4 is owned jointly with the PI, since deciding whether Steps
+1--3 show a systematic gap worth fine-tuning against is a research judgment
+call, not an engineering one.
+
+\begin{figure}[t]
+\centering
+\definecolor{lhfcolor}{RGB}{31,119,180}
+\definecolor{expcolor}{RGB}{255,127,14}
+\begin{ganttchart}[
+    vgrid,
+    hgrid,
+    x unit=0.5cm,
+    y unit title=0.7cm,
+    y unit chart=0.6cm,
+    title height=1,
+    bar height=0.55,
+    bar label font=\footnotesize,
+    title label font=\footnotesize,
+    bar progress label font=\scriptsize,
+]{1}{9}
+\gantttitle{Month}{9} \\
+\gantttitlelist{1,...,9}{1} \\
+\ganttbar[bar/.append style={fill=lhfcolor!70}]{Step 1: Re-eval harness}{1}{2} \\
+\ganttbar[bar/.append style={fill=expcolor!70}]{Step 2: Intake \& harmonization}{1}{4} \\
+\ganttbar[bar/.append style={fill=lhfcolor!70}]{Step 3: Extended benchmarking}{4}{6} \\
+\ganttbar[bar/.append style={fill=expcolor!70}]{Step 4: Consolidated fine-tune}{6}{9} \\
+\end{ganttchart}
+\caption{Proposed 9-month schedule. Blue (Steps 1, 3): mostly execution on an
+already-built harness, low risk. Orange (Steps 2, 4): where the real
+uncertainty sits -- licensing/access for Step 2, whether fine-tuning
+actually closes the gap for Step 4.}
+\label{fig:research-gantt}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Task owners and what marks each step done.}
+\label{tab:research-tasks}
+\begin{tabular}{@{}p{0.20\linewidth}p{0.24\linewidth}p{0.46\linewidth}@{}}
+\toprule
+\textbf{Step} & \textbf{Owner} & \textbf{Done when} \\
+\midrule
+1: Re-eval harness &
+Eng.\ (pipelining) &
+DisasterM3's existing results are re-sliced by provider and resolution regime, no new training run. \\
+\addlinespace
+2: Intake \& harmonization &
+Eng.\ (pipelining) + Eng.\ (database) &
+License-cleared datasets are converted to a common instruction schema and tracked in the metadata store alongside provider/sensor/license fields. \\
+\addlinespace
+3: Extended benchmarking &
+Eng.\ (pipelining) &
+All 14+ VLMs run through the harmonized harness, with stratified results captured in the dashboard. \\
+\addlinespace
+4: Consolidated fine-tune &
+Eng.\ (pipelining) + PI &
+One or two VLMs fine-tuned on the balanced corpus, re-evaluated through the same harness. \\
+\bottomrule
+\end{tabular}
+\end{table}

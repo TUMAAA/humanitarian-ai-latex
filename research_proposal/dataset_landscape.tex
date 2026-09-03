@@ -1,7 +1,7 @@
 \section{What Our Dataset Survey Adds}
 \label{sec:dataset-landscape}
 
-Alongside DisasterM3 and MONITRS, we have compiled an independent survey of
+Alongside DisasterM3 and MONITRS, Dr. Noora Al-Emadi compiled an independent survey of
 RS natural-disaster datasets
 (\texttt{research\_proposal/dataset\_survey\_noora/Remote sensing Natural
 Disaster Datasets \& More - RS Natural Disaster Datasets.csv}), recording, for each
@@ -67,3 +67,24 @@ license, downloadability, and human-validation status for each dataset --
 not analyzed quantitatively here, but load-bearing for
 Section~\ref{sec:research-plan}: any dataset folded into a benchmark harness
 or fine-tuning corpus must first be filtered on these fields.
+
+\subsection{A Secondary Payoff: Attributing Failures to Pretraining vs.\ Post-Training Data}
+\label{sec:attribution-problem}
+
+When a VLM performs poorly on a given provider/sensor/hazard slice, accuracy
+alone does not say whether the cause is \emph{pretraining} -- the base
+model's general vision-language pretraining never exposed it to imagery
+resembling that slice, so the underlying visual representation is missing --
+or \emph{post-training} -- the visual grounding is already there, but the
+model was never instruction-tuned to apply it to this task/format. The two
+call for very different fixes: a pretraining gap needs continued or
+domain-adaptive pretraining at large data and compute cost, while a
+post-training gap can plausibly be closed with a comparatively small,
+targeted instruction-tuning set. The stratified harness and harmonized
+corpus this proposal builds (Section~\ref{sec:research-plan}, Steps 1 and 4)
+give a direct way to tell the two apart: compare zero-shot and fine-tuned
+performance on the \emph{same} provider/sensor/hazard slice. A slice that
+Step 4's fine-tune recovers cleanly points to a post-training gap; a slice
+that stays poor even after fine-tuning on matched data points to a deeper,
+pretraining-level gap. This diagnosis falls out of the RQ1--RQ4 pipeline as
+a byproduct, not a separate experiment.
